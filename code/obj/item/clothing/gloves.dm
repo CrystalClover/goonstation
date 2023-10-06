@@ -249,14 +249,15 @@ ABSTRACT_TYPE(/obj/item/clothing/gloves)
 			setProperty("conductivity", 0)
 			setProperty("exploprot", 10)
 
-/obj/item/clothing/gloves/black/attackby(obj/item/W, mob/user)
-	if (istool(W, TOOL_CUTTING | TOOL_SNIPPING))
-		user.visible_message("<span class='notice'>[user] cuts off the fingertips from [src].</span>")
-		if(src.loc == user)
-			user.u_equip(src)
-		qdel(src)
-		user.put_in_hand_or_drop(new /obj/item/clothing/gloves/fingerless)
-	else . = ..()
+	attackby(obj/item/W, mob/user)
+		if (istool(W, TOOL_CUTTING | TOOL_SNIPPING))
+			user.visible_message("<span class='notice'>[user] cuts off the fingertips from [src].</span>")
+			if(src.loc == user)
+				user.u_equip(src)
+			qdel(src)
+			user.put_in_hand_or_drop(new /obj/item/clothing/gloves/fingerless)
+		else . = ..()
+
 /obj/item/clothing/gloves/cyborg
 	desc = "beep boop borp"
 	name = "cyborg gloves"
@@ -320,6 +321,18 @@ ABSTRACT_TYPE(/obj/item/clothing/gloves)
 				src.setProperty("coldprot", thermal_insul * 2)
 				src.setProperty("heatprot", thermal_insul * 2)
 
+		attackby(obj/item/W, mob/user)
+			if (istool(W, TOOL_CUTTING | TOOL_SNIPPING))
+				user.visible_message("<span class='notice'>[user] cuts off the fingertips from [src].</span>")
+				if(src.loc == user)
+					user.u_equip(src)
+				var/obj/item/clothing/gloves/crafted/fingerless/newObj = new
+				newObj.setMaterial(src.material)
+				qdel(src)
+			user.put_in_hand_or_drop(new)
+			else . = ..()
+
+
 	armored
 		icon_state = "black"
 		item_state = "swat_gl"
@@ -342,6 +355,23 @@ ABSTRACT_TYPE(/obj/item/clothing/gloves)
 				AddComponent(/datum/component/wearertargeting/unarmedblock/unarmed_bonus_block, list(SLOT_GLOVES), types)
 
 			return
+
+	fingerless
+		name = "fingerless gloves"
+		icon_state = "flatex"
+		item_state = "lfinger-"
+		desc = "Custom made fingerless gloves."
+
+
+
+/obj/item/clothing/gloves/crafted/insulating/attackby(obj/item/W, mob/user)
+	if (istool(W, TOOL_CUTTING | TOOL_SNIPPING))
+		user.visible_message("<span class='notice'>[user] cuts off the fingertips from [src].</span>")
+		if(src.loc == user)
+			user.u_equip(src)
+		qdel(src)
+		user.put_in_hand_or_drop(new /obj/item/clothing/gloves/crafted/insulatingf)
+	else . = ..()
 
 /obj/item/clothing/gloves/swat
 	desc = "A pair of Syndicate tactical gloves that are electrically insulated and quite heat-resistant. The high-quality materials help you in blocking attacks."
